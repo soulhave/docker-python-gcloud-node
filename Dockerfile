@@ -1,4 +1,4 @@
-FROM python:2.7.12
+FROM python:2.7.14
 
 # Install updates and dependencies
 RUN apt-get -qq update && \
@@ -34,8 +34,8 @@ RUN curl -sSJL "https://dl.google.com/dl/cloudsdk/channels/rapid/google-cloud-sd
 env PATH /usr/local/google-cloud-sdk/bin:$PATH
 
 ARG NODE_VERSION=8.4.0
-ARG NPM_VERSION=5.0.3
-ARG YARN_VERSION=1.0.2
+ARG NPM_VERSION=5.7.1
+ARG YARN_VERSION=1.6.0
 ARG CHROMEDRIVER_VERSION=2.31
 ARG PHANTOMJS_VERSION=2.1.1
 ARG SONAR_SCANNER_VERSION=3.0.3.778
@@ -61,3 +61,5 @@ RUN curl -sSJL "https://sonarsource.bintray.com/Distribution/sonar-scanner-cli/s
     && chmod +x /tmp/sonar-scanner-$SONAR_SCANNER_VERSION-linux \
     && mv -f /tmp/sonar-scanner-$SONAR_SCANNER_VERSION-linux /usr/local \
     && ln -s /usr/local/sonar-scanner-$SONAR_SCANNER_VERSION-linux/bin/sonar-scanner /usr/local/bin/sonar-scanner
+
+RUN pip install pip --upgrade
