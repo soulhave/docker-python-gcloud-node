@@ -18,6 +18,8 @@ RUN apt-get -qq update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+COPY requirements_dev.txt /tmp/requirements_dev.txt
+
 # Default to UTF-8 file.encoding
 ENV LANG C.UTF-8
 
@@ -31,7 +33,9 @@ RUN curl -sSJL "https://dl.google.com/dl/cloudsdk/channels/rapid/google-cloud-sd
         --rc-path=/root/.bashrc \
         --additional-components app-engine-python app-engine-java beta
 
-env PATH /usr/local/google-cloud-sdk/bin:$PATH
+RUN pip install -r /tmp/requirements_dev.txt -U
+
+ENV PATH /usr/local/google-cloud-sdk/bin:$PATH
 
 ARG NODE_VERSION=10.14.1
 ARG NPM_VERSION=6.4.1
