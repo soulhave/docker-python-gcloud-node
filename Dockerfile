@@ -36,6 +36,7 @@ RUN curl -sSJL "https://dl.google.com/dl/cloudsdk/channels/rapid/google-cloud-sd
 RUN pip install -r /tmp/requirements_dev.txt -U
 
 ENV PATH /usr/local/google-cloud-sdk/bin:$PATH
+ENV TERM=xterm-256color
 
 ARG NODE_VERSION=10.14.1
 ARG NPM_VERSION=6.4.1
