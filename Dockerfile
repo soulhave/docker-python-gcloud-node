@@ -38,8 +38,8 @@ RUN pip install -r /tmp/requirements_dev.txt -U
 ENV PATH /usr/local/google-cloud-sdk/bin:$PATH
 ENV TERM=xterm-256color
 
-ARG NODE_VERSION=10.14.1
-ARG NPM_VERSION=6.4.1
+ARG NODE_VERSION=8.11.3
+ARG NPM_VERSION=6.8.0
 ARG CHROMEDRIVER_VERSION=2.44
 ARG SONAR_SCANNER_VERSION=3.2.0.1227
 
