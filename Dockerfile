@@ -83,3 +83,6 @@ RUN curl -sSJL "http://ftp.unicamp.br/pub/apache/maven/maven-3/$MAVEN_VERSION/bi
 
 # Install Angular cli
 RUN npm cache clean --force && npm install -g @angular/cli@$ANGULAR_CLI_VERSION
+
+# Install pipenv
+RUN pip install pipenv --user && ln -s /root/.local/bin/pipenv /usr/local/bin/pipenv
