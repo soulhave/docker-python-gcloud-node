@@ -43,6 +43,7 @@ ARG NPM_VERSION=6.9.0
 ARG CHROMEDRIVER_VERSION=2.44
 ARG SONAR_SCANNER_VERSION=3.3.0.1492
 ARG MAVEN_VERSION=3.6.1
+ARG ANGULAR_CLI_VERSION=7.3.8
 
 # Install Node
 RUN wget -q "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.gz" -O /tmp/node-v$NODE_VERSION-linux-x64.tar.gz \
@@ -79,3 +80,6 @@ RUN curl -sSJL "http://ftp.unicamp.br/pub/apache/maven/maven-3/$MAVEN_VERSION/bi
     && tar -xzf "/tmp/apache-maven-$MAVEN_VERSION-bin.tar.gz" -C /usr/local \
     && ln -s /usr/local/apache-maven-$MAVEN_VERSION/bin/mvn /usr/local/bin/mvn \
     && rm -f "/tmp/apache-maven-$MAVEN_VERSION-bin.tar.gz"
+
+# Install Angular cli
+RUN npm cache clean --force && npm install -g @angular/cli@$ANGULAR_CLI_VERSION
