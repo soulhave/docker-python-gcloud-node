@@ -1,4 +1,4 @@
-FROM python:2.7.15
+FROM python:3.7.3
 
 # Install updates and dependencies
 RUN apt-get -qq update && \
@@ -38,12 +38,12 @@ RUN pip install -r /tmp/requirements_dev.txt -U
 ENV PATH /usr/local/google-cloud-sdk/bin:$PATH
 ENV TERM=xterm-256color
 
-ARG NODE_VERSION=10.14.1
-ARG NPM_VERSION=6.4.1
+ARG NODE_VERSION=10.15.3
+ARG NPM_VERSION=6.9.0
 ARG CHROMEDRIVER_VERSION=2.44
-ARG SONAR_SCANNER_VERSION=3.2.0.1227
+ARG SONAR_SCANNER_VERSION=3.3.0.1492
 
-RUN curl -sSJL "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.gz" -o /tmp/node-v$NODE_VERSION-linux-x64.tar.gz \
+RUN wget -q "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.gz" -O /tmp/node-v$NODE_VERSION-linux-x64.tar.gz \
     && tar -xzf "/tmp/node-v$NODE_VERSION-linux-x64.tar.gz" -C /usr/local --strip-components=1 \
     && npm install --silent -g npm@"$NPM_VERSION"  \
     && rm -f "/tmp/node-v$NODE_VERSION-linux-x64.tar.gz"
@@ -54,6 +54,9 @@ RUN curl -sSJL "https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSIO
     && mv -f /tmp/chromedriver /usr/local/share/chromedriver \
     && ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver \
     && rm -f /tmp/chromedriver_linux64.zip
+
+# Necessary for chromedriver
+RUN apt-get update && apt-get install -y libnss3
 
 RUN curl -sSJL "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux.zip" -o /tmp/sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux.zip \
     && unzip -q "/tmp/sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux.zip" -d /tmp \
