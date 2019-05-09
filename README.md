@@ -9,6 +9,7 @@ Base image with:
 - java 8
 - maven 3.6.1
 - angular cli 7.3.8
+- google-chrome
 
 # Docker hub
 
