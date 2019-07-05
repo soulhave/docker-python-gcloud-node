@@ -2,11 +2,10 @@
 
 Base image with:
 - python 2.7.14
-- node v8.9.4
-- npm v5.7.1
-- yarn 1.6.0
-- chromedriver 2.31
-- phantomjs 2.1.1
+- node 8.11.3
+- npm 6.8.0
+- chromedriver 2.44
+- sonarscanner 3.2.0.1227
 
 # Docker hub
 
