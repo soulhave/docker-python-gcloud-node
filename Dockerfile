@@ -14,7 +14,6 @@ RUN apt-get -qq update && \
     ca-certificates \
     libkrb5-dev \
     imagemagick \
-    mysql-client \
     netbase && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
