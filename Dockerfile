@@ -1,3 +1,4 @@
+FROM python:3.7.4
 
 # Install updates and dependencies
 RUN apt-get -qq update && \
@@ -13,6 +14,7 @@ RUN apt-get -qq update && \
     ca-certificates \
     libkrb5-dev \
     imagemagick \
+    mysql-client \
     netbase && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -42,7 +44,7 @@ ARG NPM_VERSION=6.9.0
 ARG CHROMEDRIVER_VERSION=2.44
 ARG SONAR_SCANNER_VERSION=3.3.0.1492
 ARG MAVEN_VERSION=3.6.1
-ARG ANGULAR_CLI_VERSION=7.3.8
+ARG ANGULAR_CLI_VERSION=7.3.9
 
 # Install Node
 RUN wget -q "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.gz" -O /tmp/node-v$NODE_VERSION-linux-x64.tar.gz \
@@ -82,9 +84,6 @@ RUN curl -sSJL "http://ftp.unicamp.br/pub/apache/maven/maven-3/$MAVEN_VERSION/bi
 
 # Install Angular cli
 RUN npm cache clean --force && npm install -g @angular/cli@$ANGULAR_CLI_VERSION
-
-# Install pipenv
-RUN pip install pipenv --user && ln -s /root/.local/bin/pipenv /usr/local/bin/pipenv
 
 # Install Google Chrome
 RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -

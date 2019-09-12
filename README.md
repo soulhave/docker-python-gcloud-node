@@ -8,7 +8,7 @@ Base image with:
 - sonarscanner 3.3.0.1492
 - java 8
 - maven 3.6.1
-- angular cli 7.3.8
+- angular cli 7.3.9
 - google-chrome
 
 # Docker hub
