@@ -1,35 +1,38 @@
 # Python with Node env to run tests
 
 Base image with:
-- python 2.7.14
-- node v8.9.4
-- npm v5.7.1
-- yarn 1.6.0
-- chromedriver 2.31
-- phantomjs 2.1.1
+- python 3.7.3
+- node 10.15.3
+- npm 6.9.0
+- chromedriver 2.44
+- sonarscanner 3.3.0.1492
+- java 8
+- maven 3.6.1
+- angular cli 7.3.9
+- google-chrome
 
 # Docker hub
 
-[ramonmendes/docker-python-gcloud-node](https://hub.docker.com/r/ramonmendes/docker-python-gcloud-node/)
+[ciandt/docker-python-gcloud-node](https://hub.docker.com/r/ciandt/docker-python-gcloud-node/)
 
 # Commands
 
 
 ## Build the image
 ```
-docker build -t ramonmendes/docker-python-gcloud-node:[vN] .
+docker build -t ciandt/docker-python-gcloud-node:[vN] .
 ```
 
 ## Push the image
 
 ```
-docker push ramonmendes/docker-python-gcloud-node:[vN]
+docker push ciandt/docker-python-gcloud-node:[vN]
 ```
 
 ## Test local
 
 ```
-docker run -it --volume=/Users/mendesdesouza/google-requisition-form:/localDebugRepo --workdir="/localDebugRepo" --memory=4g --memory-swap=4g --memory-swappiness=0 --entrypoint=/bin/bash ramonmendes/docker-python-gcloud-node:v2
+docker run -it --volume=/Users/mendesdesouza/google-requisition-form:/localDebugRepo --workdir="/localDebugRepo" --memory=4g --memory-swap=4g --memory-swappiness=0 --entrypoint=/bin/bash ciandt/docker-python-gcloud-node
 ```
 
 vN -> Is the docker version

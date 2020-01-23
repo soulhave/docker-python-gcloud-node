@@ -1,4 +1,4 @@
-FROM python:2.7.14
+FROM python:3.7.4
 
 # Install updates and dependencies
 RUN apt-get -qq update && \
@@ -18,6 +18,8 @@ RUN apt-get -qq update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+COPY requirements_dev.txt /tmp/requirements_dev.txt
+
 # Default to UTF-8 file.encoding
 ENV LANG C.UTF-8
 
@@ -31,20 +33,25 @@ RUN curl -sSJL "https://dl.google.com/dl/cloudsdk/channels/rapid/google-cloud-sd
         --rc-path=/root/.bashrc \
         --additional-components app-engine-python app-engine-java beta
 
-env PATH /usr/local/google-cloud-sdk/bin:$PATH
+RUN pip install -r /tmp/requirements_dev.txt -U
 
-ARG NODE_VERSION=8.9.4
-ARG NPM_VERSION=5.7.1
-ARG YARN_VERSION=1.6.0
-ARG CHROMEDRIVER_VERSION=2.31
-ARG PHANTOMJS_VERSION=2.1.1
-ARG SONAR_SCANNER_VERSION=3.0.3.778
+ENV PATH /usr/local/google-cloud-sdk/bin:$PATH
+ENV TERM=xterm-256color
 
-RUN curl -sSJL "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.gz" -o /tmp/node-v$NODE_VERSION-linux-x64.tar.gz \
+ARG NODE_VERSION=10.15.3
+ARG NPM_VERSION=6.9.0
+ARG CHROMEDRIVER_VERSION=2.44
+ARG SONAR_SCANNER_VERSION=3.3.0.1492
+ARG MAVEN_VERSION=3.6.1
+ARG ANGULAR_CLI_VERSION=8.2.1
+
+# Install Node
+RUN wget -q "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.gz" -O /tmp/node-v$NODE_VERSION-linux-x64.tar.gz \
     && tar -xzf "/tmp/node-v$NODE_VERSION-linux-x64.tar.gz" -C /usr/local --strip-components=1 \
-    && npm install --silent -g npm@"$NPM_VERSION" yarn@"$YARN_VERSION"  \
+    && npm install --silent -g npm@"$NPM_VERSION"  \
     && rm -f "/tmp/node-v$NODE_VERSION-linux-x64.tar.gz"
 
+# Install Chromedriver
 RUN curl -sSJL "https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip" -o /tmp/chromedriver_linux64.zip \
     && unzip -q /tmp/chromedriver_linux64.zip -d /tmp \
     && chmod +x /tmp/chromedriver \
@@ -52,14 +59,32 @@ RUN curl -sSJL "https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSIO
     && ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver \
     && rm -f /tmp/chromedriver_linux64.zip
 
-RUN curl -sSJL "https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-$PHANTOMJS_VERSION-linux-x86_64.tar.bz2" -o /tmp/phantomjs-$PHANTOMJS_VERSION-linux-x86_64.tar.bz2 \
-    && tar -xjf "/tmp/phantomjs-$PHANTOMJS_VERSION-linux-x86_64.tar.bz2" -C /usr/local --strip-components=1 \
-    && rm -f "/tmp/phantomjs-$PHANTOMJS_VERSION-linux-x86_64.tar.bz2"
+# Necessary for Chromedriver
+RUN apt-get update && apt-get install -y libnss3
 
-RUN curl -sSJL "https://sonarsource.bintray.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux.zip" -o /tmp/sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux.zip \
+# Install Sonar scanner
+RUN curl -sSJL "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux.zip" -o /tmp/sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux.zip \
     && unzip -q "/tmp/sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux.zip" -d /tmp \
     && chmod +x /tmp/sonar-scanner-$SONAR_SCANNER_VERSION-linux \
     && mv -f /tmp/sonar-scanner-$SONAR_SCANNER_VERSION-linux /usr/local \
     && ln -s /usr/local/sonar-scanner-$SONAR_SCANNER_VERSION-linux/bin/sonar-scanner /usr/local/bin/sonar-scanner
 
+# Update pip
 RUN pip install pip --upgrade
+
+# Install Java 8
+RUN apt install -yq openjdk-8-jdk
+
+# Install Maven
+RUN curl -sSJL "http://ftp.unicamp.br/pub/apache/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz" -o /tmp/apache-maven-$MAVEN_VERSION-bin.tar.gz \
+    && tar -xzf "/tmp/apache-maven-$MAVEN_VERSION-bin.tar.gz" -C /usr/local \
+    && ln -s /usr/local/apache-maven-$MAVEN_VERSION/bin/mvn /usr/local/bin/mvn \
+    && rm -f "/tmp/apache-maven-$MAVEN_VERSION-bin.tar.gz"
+
+# Install Angular cli
+RUN npm cache clean --force && npm install -g @angular/cli@$ANGULAR_CLI_VERSION
+
+# Install Google Chrome
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
+RUN sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+RUN apt-get update && apt-get install -y google-chrome-stable
